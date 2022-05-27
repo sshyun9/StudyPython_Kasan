@@ -4,7 +4,7 @@
 작성자 빵빵
 설명 파일DB를 사용한 주소록 프로그램
 '''
-from operator import truediv
+
 import os   # 운영체제 명령용 모듈
 
 # 주소록 클래스
@@ -31,41 +31,6 @@ class Contact:
             return True
         else:
             return False
-
-
-dir_name = 'C:/Repository/StudyPython_Kasan/day4/'   # 절대경로 마지막 / 꼭 붙이기
-# 파일 저장함수
-def saveContacts(contacts):
-    global dir_name
-    f = open(f'{dir_name}contacts.txt', mode='w', encoding='utf-8')
-    for item in contacts:
-        f.write(f'{item.name}/{item.phone_number}/{item.e_mail}/{item.addr}\n')
-        
-    f.close()
-
-# 파일 로드함수
-def loadContacts(contacts):
-    global dir_name
-    f = open(f'{dir_name}contacts.txt', mode='r', encoding='utf-8')
-    while True:
-        line = f.readline()
-        if not line: break
-
-        lines = line.replace('\n','').split('/')   # 탈출문자(\n \r) 전부 삭제
-        contact = Contact(lines[0], lines[1], lines[2], lines[3])
-        contacts.append(contact)
-    
-    f.close()
-
-
-
-# 화면 클리어 함수
-def clearConsole():
-    command = 'clear'   # UNIX, LINUX, MACOS
-    if os.name in ('nt','dos'):   #Windows
-        command = 'cls'
-    
-    os.system(command)
 
 # 사용자 정보 입력
 def getContact():
@@ -94,19 +59,22 @@ def delContact(contacts, name):
 # 연락처 검색 함수 220526 16:14 신규추가
 def searchContact(contacts, name):
     isFind = False
+
     for item in contacts:
         if item.isNameExist(name) == True:
             isFind = True
             print (item)
             break
     
-    if isFind ==False:
+    if isFind == False:
         print('검색 정보가 없습니다.')
 
 # 연락처 수정 함수 220526 16:36 신규추가
 def editContact(contacts, name):
     contact = None     # 수정할 연락처 담을 변수
+    index = -1   # 찾은 리스트 인덱스
     isFind = False
+
     for i, item in enumerate(contacts):
         if item.isNameExist(name) == True:
             isFind = True
@@ -114,20 +82,20 @@ def editContact(contacts, name):
             index = i
             break
     
-    if isFind ==False:
+    if isFind == False:
         print('검색 정보가 없습니다.')
     else:
+        # pass # Contact 객체를 보여주고 값을 수정할 입력받기
         print('검색정보')
         print(f'{contact.name}/{contact.phone_number}/{contact. e_mail}/{contact.addr}')
 
-    try:    # 수정할 폰번호/이메일/주소 입력
-        (phone_number, e_mail, addr) = \
-        input('정보입력(폰번호, 이메일, 주소)[구분자:/]\n >').split('/')
-        member = Contact(contact.name, phone_number, e_mail, addr)
-
-        contacts[index] = member   # 이전값을 새 연락처로 변경
-    except Exception as ex:
-        print('정확하게 이름/전화번호/이메일/주소 순으로 입력해주세요.')
+        try:    # 수정할 폰번호/이메일/주소 입력
+            (phone_number, e_mail, addr) = \
+                input('정보입력(전화번호, 이메일, 주소)[구분자:/]\n >').split('/')
+            member = Contact(contact.name, phone_number, e_mail, addr)
+            contacts[index] = member   # 이전값을 새 연락처로 변경
+        except Exception as ex:
+            print('정확하게 전화번호/이메일/주소 순으로 입력해주세요.')
 
     
 
@@ -147,6 +115,38 @@ def getMenu():
     except:
         menu = 0
     return menu
+
+dir_name = 'C:/Repository/StudyPython_Kasan/day4/'   # 절대경로 마지막 / 꼭 붙이기
+# 파일 저장함수
+def saveContacts(contacts):
+    global dir_name
+    f = open(f'{dir_name}contacts.txt', mode='w', encoding='utf-8')
+    for item in contacts:
+        f.write(f'{item.name}/{item.phone_number}/{item.e_mail}/{item.addr}\n')
+        
+    f.close()
+
+# 파일 로드함수
+def loadContacts(contacts):
+    global dir_name
+    f = open(f'{dir_name}contacts.txt', mode='r', encoding='utf-8')
+    while True:
+        line = f.readline()
+        if not line: break
+
+        lines = line.replace('\n','').split('/')   # 탈출문자(\n \r) 전부 삭제
+        contact = Contact(lines[0], lines[1], lines[2], lines[3])
+        contacts.append(contact)
+    
+    f.close()
+
+# 화면 클리어 함수
+def clearConsole():
+    command = 'clear'   # UNIX, LINUX, MACOS
+    if os.name in ('nt','dos'):   #Windows
+        command = 'cls'
+    
+    os.system(command)
 
 # 기본 실행 함수
 def run():  # 클래스X 일반함수 -> (self) 없음
